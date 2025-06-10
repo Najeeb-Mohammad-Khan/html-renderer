@@ -1,62 +1,118 @@
 
-<!DOCTYPE html>
+html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HTML Renderer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    textarea {
-      width: 100%;
-      height: 200px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      font-family: monospace;
-    }
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-   1px solid #ccc;
-      padding: 10px;
-      margin-top: 20px;
-      min-height: 200px;
-      background-color: #f9f9f9;
-    }
-  </style>
-</head>
-<body>
-  <h1>HTML Renderer</h1>
-  <p>Enter your HTML code below and click "Render HTML" to see the output:</p>
-  <textarea id="htmlInput" placeholder="3 Enter your HTML code here..."></textarea>
-  <br />
-  <button onclick="renderHTML()">Render HTML</button>
-  <div id="output"></div>
-
-  <script>
-    function renderHTML() {
-      const htmlInput = document.getElementById('htmlInput').value;
-      const styledHTML = `
-        <style>
-          table, th, td {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Renderer and Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: monospace;
+        }
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            font-family: monospace;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #output {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+            min-height: 200px;
+            background-color: #f9f9f9;
+        }
+        table, th, td {
             border: 1px solid black !important;
             border-collapse: collapse !important;
-          }
-          th, td {
+        }
+        th, td {
             padding: 8px !important;
             text-align: center !important;
-          }
-        </style>
-        ${htmlInput}
-      `;
-      document.getElementById('output').innerHTML = styledHTML;
-    }
-  </script>
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML Renderer and Editor</h1>
+    <p>Enter your HTML code below and click "Render HTML" to see the output:</p>
+    <textarea id="htmlInput" placeholder="Enter your HTML code here..."></textarea>
+    <br>
+    <input type="text" id="hyperlinkURL" placeholder="Enter hyperlink URL here...">
+    <input type="text" id="hyperlinkText" placeholder="Enter hyperlink text here...">
+    <br>
+    <button onclick="addHyperlink()">Add Hyperlink to Videos Column</button>
+    <button onclick="renderHTML()">Render HTML</button>
+    <div id="output"></div>
+    <h2>Edited HTML Code:</h2>
+    <textarea id="editedHtmlOutput" readonly></textarea>
+
+    <script>
+        function addHyperlink() {
+            const htmlInput = document.getElementById('htmlInput').value;
+            const hyperlinkURL = document.getElementById('hyperlinkURL').value;
+            const hyperlinkText = document.getElementById('hyperlinkText').value;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlInput, 'text/html');
+            const tables = doc.getElementsByTagName('table');
+            if (tables.length > 0) {
+                const firstTable = tables[0];
+                const rows = firstTable.rows;
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].cells;
+                    if (cells.length > 0 && cells[0].textContent.includes('Videos')) {
+                        const newRow = firstTable.insertRow(i + 1);
+                        const newCell = newRow.insertCell(0);
+                        newCell.colSpan = cells[0].colSpan;
+                        newCell.innerHTML = `<a href="${hyperlinkURL}">${hyperlinkText}</a>`;
+                        break;
+                    }
+                }
+            }
+            const serializer = new XMLSerializer();
+            const editedHtml = serializer.serializeToString(doc);
+            document.getElementById('htmlInput').value = editedHtml;
+            document.getElementById('editedHtmlOutput').value = editedHtml;
+        }
+
+        function renderHTML() {
+            const htmlInput = document.getElementById('htmlInput').value;
+            const styledHTML = `
+                <style>
+                    table, th, td {
+                        border: 1px solid black !important;
+                        border-collapse: collapse !important;
+                    }
+                    th, td {
+                        padding: 8px !important;
+                        text-align: center !important;
+                    }
+                </style>
+                ${htmlInput}
+            `;
+            document.getElementById('output').innerHTML = styledHTML;
+        }
+    </script>
 </body>
 </html>
+'''
+
+# Write the content to index.html file
+with open('index.html', 'w') as file:
+    file.write(html_content)
+
+print("The index.html file has been successfully created with enhanced features for editing and rendering HTML tables.")
