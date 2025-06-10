@@ -22,36 +22,33 @@
       padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
-   : 1px solid #ccc;
+    }
+    #output {
+      border: 1px solid #ccc;
       padding: 10px;
       margin-top: 20px;
       min-height: 200px;
       background-color: #f9f9f9;
     }
-
-    /* Apply table styles globally inside the output */
-    #output table, #output th, #output td {
-      border: 1px solid black;
-      border-collapse: collapse;
-    }
-    #output th, #output td {
-      padding: 8px;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
-  <h1>HTML Renderer</h1>
-  <p>Enter your HTML code below and click "Render HTML" to see the output:</p>
-  <textarea id="htmlInput" placeholder=" 1 Enter your HTML code here..."></textarea>
-  <br />
-  <button onclick="renderHTML()">Render HTML</button>
-  <div id="output"></div>
-
-  <script>
-    function renderHTML() {
+  renderHTML() {
       const htmlInput = document.getElementById('htmlInput').value;
-      document.getElementById('output').innerHTML = htmlInput;
+      const styledHTML = `
+        <style>
+          table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+          }
+          th, td {
+            padding: 8px;
+            text-align: center;
+          }
+        </style>
+        ${htmlInput}
+      `;
+      document.getElementById('output').innerHTML = styledHTML;
     }
   </script>
 </body>
